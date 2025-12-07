@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinephile DNA de Alex</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="dashboard_data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="dashboard_data.js" defer></script>
     <style>
         :root {
             --bg: #0b0c10;
@@ -359,7 +359,7 @@
 
                 return `
                 <div class="profile-card">
-                    <img src="${imgSrc}" class="profile-img" 
+                    <img src="${imgSrc}" class="profile-img" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}'">
                     <div class="profile-name">${item.name}</div>
                     <div class="profile-stat">★ ${item.avg.toFixed(2)}</div>
@@ -376,7 +376,7 @@
             }
             el.innerHTML = list.map(m => `
                 <div class="movie-card">
-                    <img src="https://image.tmdb.org/t/p/w200${m.img || ''}" class="poster"
+                    <img src="https://image.tmdb.org/t/p/w200${m.img || ''}" class="poster" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/100x150/333/ccc?text=No+Img'">
                     <div style="font-size:0.75rem; margin-top:8px; line-height:1.2; color: #ccc">${m.t}</div>
                     <div class="badge ${type === 'guilty' ? 'badge-guilty' : 'badge-hater'}">
@@ -569,17 +569,19 @@
         }
 
         // INIT
-        try {
-            initCharts();
-            updateView('all');
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                initCharts();
+                updateView('all');
 
-            // Static Content (Psychology)
-            renderMovies('guilty-container', d.psychology.guilty, 'guilty');
-            renderMovies('haters-container', d.psychology.haters, 'hater');
-        } catch (e) {
-            console.error("Initialization Error:", e);
-            document.body.innerHTML += `<div style="color:red; margin:20px">Error JS: ${e.message}</div>`;
-        }
+                // Static Content (Psychology)
+                renderMovies('guilty-container', d.psychology.guilty, 'guilty');
+                renderMovies('haters-container', d.psychology.haters, 'hater');
+            } catch (e) {
+                console.error("Initialization Error:", e);
+                document.body.innerHTML += `<div style="color:red; margin:20px">Error JS: ${e.message}</div>`;
+            }
+        });
 
     </script>
 </body>

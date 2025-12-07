@@ -4,7 +4,7 @@ Este repositorio contiene las herramientas y el dashboard interactivo para anali
 
 ## Contenido
 
-- **Dashboard Interactivo:** `infographic.html` (Visualización de datos con Chart.js)
+- **Dashboard Interactivo:** `index.html` (Visualización de datos con Chart.js)
 - **Scrips de Análisis:** 
   - `export_dashboard_data.py`: Procesa el JSON de historial y genera `dashboard_data.js`.
   - `generate_psychology_report.py`: Genera insights curiosos sobre mis gustos.

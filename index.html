@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cinephile DNA de Alex</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script src="dashboard_data.js" defer></script>
+
     <style>
         :root {
             --bg: #0b0c10;
@@ -326,28 +325,32 @@
 
             <h3 style="margin-top:30px">🤬 Pues a mi no me gustaron tanto ...")</h3>
             <div class="subtitle" style="font-size: 0.9rem; margin-top:-10px;">(Películas aclamadas que tú suspendiste)
+                <div class="movie-list" id="haters-container"></div>
             </div>
-            <div class="movie-list" id="haters-container"></div>
         </div>
-    </div>
 
-    <script>
-        // Data Check
-        if (typeof PROFILE_DATA === 'undefined') {
-            document.body.innerHTML = '<h2 style="color:red; text-align:center">Error: dashboard_data.js no encontrado o corrupto.</h2>';
-        }
+        <!-- External Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="dashboard_data.js"></script>
 
-        const d = PROFILE_DATA;
-        let currentMode = 'all';
-        let charts = {};
-
-        function renderProfiles(containerId, list) {
-            const el = document.getElementById(containerId);
-            if (!list || list.length === 0) {
-                el.innerHTML = '<div style="color:#666; padding:20px;">Sin datos suficientes</div>';
-                return;
+        <script>
+            // Data Check
+            if (typeof PROFILE_DATA === 'undefined') {
+                document.body.innerHTML += '<h2 style="color:red; text-align:center; padding:20px;">Error: dashboard_data.js no encontrado o corrupto.</h2>';
+                throw new Error("Data missing");
             }
-            el.innerHTML = list.map(item => `
+
+            const d = PROFILE_DATA;
+            let currentMode = 'all';
+            let charts = {};
+
+            function renderProfiles(containerId, list) {
+                const el = document.getElementById(containerId);
+                if (!list || list.length === 0) {
+                    el.innerHTML = '<div style="color:#666; padding:20px;">Sin datos suficientes</div>';
+                    return;
+                }
+                el.innerHTML = list.map(item => `
                 <div class="profile-card">
                     <img src="${item.image || 'https://via.placeholder.com/80x80/333/ccc?text=' + item.name.charAt(0)}" class="profile-img" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}'">
@@ -355,15 +358,15 @@
                     <div class="profile-stat">★ ${item.avg.toFixed(2)}</div>
                 </div>
             `).join('');
-        }
-
-        function renderMovies(containerId, list, type) {
-            const el = document.getElementById(containerId);
-            if (!list || list.length === 0) {
-                el.innerHTML = '<div style="color:#666">No hay películas en esta categoría.</div>';
-                return;
             }
-            el.innerHTML = list.map(m => `
+
+            function renderMovies(containerId, list, type) {
+                const el = document.getElementById(containerId);
+                if (!list || list.length === 0) {
+                    el.innerHTML = '<div style="color:#666">No hay películas en esta categoría.</div>';
+                    return;
+                }
+                el.innerHTML = list.map(m => `
                 <div class="movie-card">
                     <img src="${m.img || 'https://via.placeholder.com/100x150/333/ccc?text=No+Img'}" class="poster" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/100x150/333/ccc?text=No+Img'">
@@ -373,206 +376,204 @@
                     </div>
                 </div>
             `).join('');
-        }
+            }
 
-        function initCharts() {
-            // New Distribution Chart (Vertical Gradient Bars)
-            const ctxDist = document.getElementById('distChart').getContext('2d');
-            const gradient = ctxDist.createLinearGradient(0, 0, 0, 100);
-            gradient.addColorStop(0, '#66fcf1');
-            gradient.addColorStop(1, '#45a29e');
+            function initCharts() {
+                // New Distribution Chart (Vertical Gradient Bars)
+                const ctxDist = document.getElementById('distChart').getContext('2d');
+                const gradient = ctxDist.createLinearGradient(0, 0, 0, 100);
+                gradient.addColorStop(0, '#66fcf1');
+                gradient.addColorStop(1, '#45a29e');
 
-            charts.dist = new Chart(ctxDist, {
-                type: 'bar',
-                data: {
-                    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                    datasets: [{
-                        label: 'Vistas',
-                        data: [],
-                        backgroundColor: gradient,
-                        borderRadius: 3,
-                        barPercentage: 0.6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { display: false },
-                        x: {
-                            grid: { display: false, drawBorder: false },
-                            ticks: { color: '#666', font: { size: 9 } }
-                        }
-                    }
-                }
-            });
-
-            // Evolution Chart (Smoother Line area)
-            const ctxEvo = document.getElementById('evoChart').getContext('2d');
-            charts.evo = new Chart(ctxEvo, {
-                type: 'line',
-                data: {
-                    labels: d.evolution.map(x => x.year),
-                    datasets: [{
-                        label: 'Nota Media',
-                        data: d.evolution.map(x => x.avg),
-                        borderColor: '#ffd700',
-                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true,
-                        pointBackgroundColor: '#0b0c10',
-                        pointBorderColor: '#ffd700',
-                        pointBorderWidth: 2,
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: 'rgba(31, 40, 51, 0.9)'
-                        }
+                charts.dist = new Chart(ctxDist, {
+                    type: 'bar',
+                    data: {
+                        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        datasets: [{
+                            label: 'Vistas',
+                            data: [],
+                            backgroundColor: gradient,
+                            borderRadius: 3,
+                            barPercentage: 0.6
+                        }]
                     },
-                    scales: {
-                        y: {
-                            min: 5, max: 8,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#666' }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { display: false },
+                            x: {
+                                grid: { display: false, drawBorder: false },
+                                ticks: { color: '#666', font: { size: 9 } }
+                            }
+                        }
+                    }
+                });
+
+                // Evolution Chart (Smoother Line area)
+                const ctxEvo = document.getElementById('evoChart').getContext('2d');
+                charts.evo = new Chart(ctxEvo, {
+                    type: 'line',
+                    data: {
+                        labels: d.evolution.map(x => x.year),
+                        datasets: [{
+                            label: 'Nota Media',
+                            data: d.evolution.map(x => x.avg),
+                            borderColor: '#ffd700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#0b0c10',
+                            pointBorderColor: '#ffd700',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(31, 40, 51, 0.9)'
+                            }
                         },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#888' }
+                        scales: {
+                            y: {
+                                min: 5, max: 8,
+                                grid: { color: 'rgba(255,255,255,0.05)' },
+                                ticks: { color: '#666' }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#888' }
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            // Genres Chart (New)
-            const ctxGen = document.getElementById('genresChart').getContext('2d');
-            charts.genres = new Chart(ctxGen, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Nota Media',
-                        data: [],
-                        backgroundColor: '#e50914',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { min: 5, max: 9, grid: { color: '#333' } } }
-                }
-            });
+                // Genres Chart (New)
+                const ctxGen = document.getElementById('genresChart').getContext('2d');
+                charts.genres = new Chart(ctxGen, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Nota Media',
+                            data: [],
+                            backgroundColor: '#e50914',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { x: { min: 5, max: 9, grid: { color: '#333' } } }
+                    }
+                });
 
-            // Decades Chart
-            const ctxDec = document.getElementById('decadesChart').getContext('2d');
-            charts.decades = new Chart(ctxDec, {
-                type: 'radar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Nota Media',
-                        data: [],
-                        backgroundColor: 'rgba(102, 252, 241, 0.2)',
-                        borderColor: '#66fcf1',
-                        pointBackgroundColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            angleLines: { color: '#333' },
-                            grid: { color: '#333' },
-                            pointLabels: { color: '#ccc' },
-                            suggestedMin: 5,
-                            suggestedMax: 8
+                // Decades Chart
+                const ctxDec = document.getElementById('decadesChart').getContext('2d');
+                charts.decades = new Chart(ctxDec, {
+                    type: 'radar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Nota Media',
+                            data: [],
+                            backgroundColor: 'rgba(102, 252, 241, 0.2)',
+                            borderColor: '#66fcf1',
+                            pointBackgroundColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: '#333' },
+                                grid: { color: '#333' },
+                                pointLabels: { color: '#ccc' },
+                                suggestedMin: 5,
+                                suggestedMax: 8
+                            }
                         }
                     }
+                });
+            }
+
+            function renderKeywords(containerId, list) {
+                const el = document.getElementById(containerId);
+                if (!list || list.length === 0) {
+                    el.innerHTML = '<div style="color:#666">No keywords data</div>';
+                    return;
+                }
+                el.innerHTML = list.map(k => {
+                    const size = 0.8 + (k.weight * 0.1);
+                    return `<span style="background:var(--card-bg); border:1px solid var(--accent-dark); color:var(--text-main); padding:4px 8px; border-radius:12px; font-size:${Math.min(size, 1.5)}rem">${k.text}</span>`;
+                }).join('');
+            }
+
+            function updateView(mode) {
+                const data = d[mode]; // Current mode (all/recent) for standard blocks
+
+                // KPIs
+                document.getElementById('kpi-total').innerText = data.total;
+                document.getElementById('kpi-avg').innerText = data.avg;
+
+                // Profiles
+                renderProfiles('directors-container', data.directors);
+                renderProfiles('actors-container', data.actors);
+
+                // Chart Updates
+                charts.dist.data.datasets[0].data = data.distribution;
+                charts.dist.update();
+
+                // Genre Updates
+                charts.genres.data.labels = data.genres.map(g => g.name);
+                charts.genres.data.datasets[0].data = data.genres.map(g => g.avg);
+                charts.genres.update();
+
+                // GLOBAL METRICS
+                if (d.decades) {
+                    charts.decades.data.labels = d.decades.map(x => x.name);
+                    charts.decades.data.datasets[0].data = d.decades.map(x => x.avg);
+                    charts.decades.update();
+                }
+
+                if (d.keywords) {
+                    renderKeywords('keywords-container', d.keywords);
+                }
+            }
+
+            function switchTab(mode) {
+                currentMode = mode;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+                updateView(mode);
+            }
+
+            // INIT
+            document.addEventListener('DOMContentLoaded', () => {
+                try {
+                    initCharts();
+                    updateView('all');
+
+                    // Static Content (Psychology)
+                    renderMovies('guilty-container', d.psychology.guilty, 'guilty');
+                    renderMovies('haters-container', d.psychology.haters, 'hater');
+                } catch (e) {
+                    console.error("Initialization Error:", e);
+                    document.body.innerHTML += `<div style="color:red; margin:20px">Error JS: ${e.message}</div>`;
                 }
             });
-        }
-
-        function renderKeywords(containerId, list) {
-            const el = document.getElementById(containerId);
-            if (!list || list.length === 0) {
-                el.innerHTML = '<div style="color:#666">No keywords data</div>';
-                return;
-            }
-            // Simple Tag Cloud Style
-            el.innerHTML = list.map(k => {
-                const size = 0.8 + (k.weight * 0.1);
-                return `<span style="background:var(--card-bg); border:1px solid var(--accent-dark); color:var(--text-main); padding:4px 8px; border-radius:12px; font-size:${Math.min(size, 1.5)}rem">${k.text}</span>`;
-            }).join('');
-        }
-
-        function updateView(mode) {
-            const data = d[mode]; // Current mode (all/recent) for standard blocks
-
-            // KPIs
-            document.getElementById('kpi-total').innerText = data.total;
-            document.getElementById('kpi-avg').innerText = data.avg;
-
-            // Profiles
-            renderProfiles('directors-container', data.directors);
-            renderProfiles('actors-container', data.actors);
-
-            // Chart Updates
-            charts.dist.data.datasets[0].data = data.distribution;
-            charts.dist.update();
-
-            // Genre Updates
-            charts.genres.data.labels = data.genres.map(g => g.name);
-            charts.genres.data.datasets[0].data = data.genres.map(g => g.avg);
-            charts.genres.update();
-
-            // GLOBAL METRICS (Not split by mode in Python script currently, but accessible)
-            if (d.decades) {
-                charts.decades.data.labels = d.decades.map(x => x.name);
-                charts.decades.data.datasets[0].data = d.decades.map(x => x.avg);
-                charts.decades.update();
-            }
-
-            if (d.keywords) {
-                renderKeywords('keywords-container', d.keywords);
-            }
-        }
-
-        function switchTab(mode) {
-            currentMode = mode;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            updateView(mode);
-        }
-
-        // INIT
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                initCharts();
-                updateView('all');
-
-                // Static Content (Psychology)
-                renderMovies('guilty-container', d.psychology.guilty, 'guilty');
-                renderMovies('haters-container', d.psychology.haters, 'hater');
-            } catch (e) {
-                console.error("Initialization Error:", e);
-                document.body.innerHTML += `<div style="color:red; margin:20px">Error JS: ${e.message}</div>`;
-            }
-        });
-
-    </script>
+        </script>
 </body>
 
 </html>

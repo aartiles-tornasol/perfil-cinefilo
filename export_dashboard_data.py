@@ -235,20 +235,22 @@ def main():
     # Global metrics (all time)
     decade_stats = analyze_decades(movies)
     keyword_stats = analyze_keyword_dna(movies)
+    evolution_stats = all_time['evolution']
 
     final_data = {
         'all': all_time,
         'recent': recent,
         'psychology': psych,
         'decades': decade_stats,
-        'keywords': keyword_stats
+        'keywords': keyword_stats,
+        'evolution': evolution_stats
     }
     
     js_content = f"const PROFILE_DATA = {json.dumps(final_data, indent=2)};"
-    
-    with open('dashboard_data.js', 'w') as f:
-        f.write(js_content)
-        
+    # Export to JS file
+    with open('data.js', 'w', encoding='utf-8') as f:
+        f.write(f"var PROFILE_DATA = {json.dumps(final_data, indent=2)};\n")
+
     print("Expanded JS Data File generated.")
 
 if __name__ == '__main__':

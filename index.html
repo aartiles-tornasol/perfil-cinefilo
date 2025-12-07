@@ -347,25 +347,14 @@
                 el.innerHTML = '<div style="color:#666; padding:20px;">Sin datos suficientes</div>';
                 return;
             }
-            el.innerHTML = list.map(item => {
-                let imgSrc;
-                if (!item.image) {
-                    imgSrc = `https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}`;
-                } else if (item.image.startsWith('http')) {
-                    imgSrc = item.image;
-                } else {
-                    imgSrc = `https://image.tmdb.org/t/p/w200${item.image}`;
-                }
-
-                return `
+            el.innerHTML = list.map(item => `
                 <div class="profile-card">
-                    <img src="${imgSrc}" class="profile-img" loading="lazy"
+                    <img src="${item.image || 'https://via.placeholder.com/80x80/333/ccc?text=' + item.name.charAt(0)}" class="profile-img" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}'">
                     <div class="profile-name">${item.name}</div>
                     <div class="profile-stat">★ ${item.avg.toFixed(2)}</div>
                 </div>
-            `;
-            }).join('');
+            `).join('');
         }
 
         function renderMovies(containerId, list, type) {
@@ -376,7 +365,7 @@
             }
             el.innerHTML = list.map(m => `
                 <div class="movie-card">
-                    <img src="https://image.tmdb.org/t/p/w200${m.img || ''}" class="poster" loading="lazy"
+                    <img src="${m.img || 'https://via.placeholder.com/100x150/333/ccc?text=No+Img'}" class="poster" loading="lazy"
                          onerror="this.src='https://via.placeholder.com/100x150/333/ccc?text=No+Img'">
                     <div style="font-size:0.75rem; margin-top:8px; line-height:1.2; color: #ccc">${m.t}</div>
                     <div class="badge ${type === 'guilty' ? 'badge-guilty' : 'badge-hater'}">

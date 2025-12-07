@@ -2,140 +2,141 @@ const PROFILE_DATA = {
   "all": {
     "total": 1255,
     "avg": 6.41,
-    "directors": [
+    "evolution": [
       {
-        "name": "Alfred Hitchcock",
-        "avg": 7.888888888888889,
-        "count": 9,
-        "image": "/108fiNM6poRieMg7RIqLJRxdAwG.jpg"
+        "year": 2011,
+        "avg": 6.563839285714286
       },
       {
-        "name": "Quentin Tarantino",
-        "avg": 7.8,
-        "count": 9,
-        "image": "/1gjcpAa99FAOWGnrUvHEXXsRs7o.jpg"
+        "year": 2012,
+        "avg": 5.96875
       },
       {
-        "name": "Martin McDonagh",
-        "avg": 7.733333333333333,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Martin_McDonagh_2012.jpg/440px-Martin_McDonagh_2012.jpg"
+        "year": 2013,
+        "avg": 6.488888888888889
       },
       {
-        "name": "Jean-Pierre Jeunet",
-        "avg": 7.433333333333334,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Jean-Pierre_Jeunet_2010.jpg/440px-Jean-Pierre_Jeunet_2010.jpg"
+        "year": 2014,
+        "avg": 6.069565217391304
       },
       {
-        "name": "Alex Garland",
-        "avg": 7.4,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Alex_Garland_2018.jpg/440px-Alex_Garland_2018.jpg"
+        "year": 2015,
+        "avg": 6.1558441558441555
       },
       {
-        "name": "Aaron Sorkin",
-        "avg": 7.4,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Aaron_Sorkin_2012.jpg/440px-Aaron_Sorkin_2012.jpg"
+        "year": 2016,
+        "avg": 6.16027397260274
       },
       {
-        "name": "Marc Forster",
-        "avg": 7.3,
-        "count": 4,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Marc_Forster_2013.jpg/440px-Marc_Forster_2013.jpg"
+        "year": 2017,
+        "avg": 6.40875
       },
       {
-        "name": "Damien Chazelle",
-        "avg": 7.3,
-        "count": 4,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Damien_Chazelle_2014.jpg/440px-Damien_Chazelle_2014.jpg"
+        "year": 2018,
+        "avg": 6.498571428571428
       },
       {
-        "name": "Steven Spielberg",
-        "avg": 7.2875,
-        "count": 16,
-        "image": "/tZxcg19YQ3e8fJ0pOs7xjGYlxsw.jpg"
+        "year": 2019,
+        "avg": 6.393421052631579
       },
       {
-        "name": "Baz Luhrmann",
-        "avg": 7.266666666666667,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Baz_Luhrmann_2013.jpg/440px-Baz_Luhrmann_2013.jpg"
+        "year": 2020,
+        "avg": 6.608421052631579
+      },
+      {
+        "year": 2021,
+        "avg": 6.279268292682927
+      },
+      {
+        "year": 2022,
+        "avg": 6.516666666666667
+      },
+      {
+        "year": 2023,
+        "avg": 6.4481012658227845
+      },
+      {
+        "year": 2024,
+        "avg": 6.354054054054054
+      },
+      {
+        "year": 2025,
+        "avg": 6.603571428571429
       }
     ],
+    "distribution": [
+      0,
+      0,
+      2,
+      13,
+      148,
+      712,
+      304,
+      73,
+      3,
+      0
+    ],
+    "directors": [],
     "actors": [
       {
         "name": "James Stewart",
         "avg": 7.6,
         "count": 5,
-        "image": "/jam9DRhOuKomlr0vUXTamPoxPdk.jpg"
+        "image": "img/James_Stewart.jpg"
       },
       {
         "name": "Elias Koteas",
         "avg": 7.4,
         "count": 5,
-        "image": "/luevjlGy0tYQbAbcz0mVxCYqegH.jpg"
+        "image": "img/Elias_Koteas.jpg"
       },
       {
         "name": "Tim Roth",
         "avg": 7.325,
         "count": 8,
-        "image": "/qSizF2i9gz6c6DbAC5RoIq8sVqX.jpg"
+        "image": "img/Tim_Roth.jpg"
       },
       {
         "name": "Harvey Keitel",
         "avg": 7.314285714285714,
         "count": 7,
-        "image": "/7P30hza1neYWW3r7rSQOC736K2Z.jpg"
+        "image": "img/Harvey_Keitel.jpg"
       },
       {
         "name": "Mahershala Ali",
         "avg": 7.28,
         "count": 5,
-        "image": "/9ZmSejm5lnUVY5IJ1iNx2QEjnHb.jpg"
+        "image": "img/Mahershala_Ali.jpg"
       },
       {
         "name": "Mark Rylance",
         "avg": 7.26,
         "count": 5,
-        "image": "/bztEZRyXrvW3Pg1fexNASXlZrq7.jpg"
+        "image": "img/Mark_Rylance.jpg"
       },
       {
         "name": "Emma Stone",
         "avg": 7.166666666666667,
         "count": 6,
-        "image": "/cZ8a3QvAnj2cgcgVL6g4XaqPzpL.jpg"
+        "image": "img/Emma_Stone.jpg"
       },
       {
         "name": "Sarah Paulson",
         "avg": 7.14,
         "count": 5,
-        "image": "/tJnhBV516yrekR3hTDUw15UMbxS.jpg"
+        "image": "img/Sarah_Paulson.jpg"
       },
       {
         "name": "Toni Collette",
         "avg": 7.0600000000000005,
         "count": 10,
-        "image": "/lzXRh16qe4HHeBN6tMyw0DHvaMn.jpg"
+        "image": "img/Toni_Collette.jpg"
       },
       {
         "name": "Colin Firth",
         "avg": 7.0600000000000005,
         "count": 5,
-        "image": "/4VBeYEUQbfhnivdkqInM36u5fda.jpg"
-      },
-      {
-        "name": "Val Kilmer",
-        "avg": 7.04,
-        "count": 5,
-        "image": "/sWH9jTD0bC5gWhhceUlzfNiNup0.jpg"
-      },
-      {
-        "name": "John Travolta",
-        "avg": 7.02,
-        "count": 5,
-        "image": "/ap8eEYfBKTLixmVVpRlq4NslDD5.jpg"
+        "image": "img/Colin_Firth.jpg"
       }
     ],
     "genres": [
@@ -198,158 +199,187 @@ const PROFILE_DATA = {
         "avg": 6.436647727272727,
         "count": 352,
         "image": null
+      },
+      {
+        "name": "Terror",
+        "avg": 6.39453125,
+        "count": 128,
+        "image": null
+      },
+      {
+        "name": "Ciencia ficci\u00f3n",
+        "avg": 6.373333333333333,
+        "count": 210,
+        "image": null
+      },
+      {
+        "name": "Suspense",
+        "avg": 6.314285714285714,
+        "count": 588,
+        "image": null
+      },
+      {
+        "name": "Crimen",
+        "avg": 6.30523076923077,
+        "count": 325,
+        "image": null
+      },
+      {
+        "name": "Western",
+        "avg": 6.3,
+        "count": 8,
+        "image": null
+      },
+      {
+        "name": "B\u00e9lica",
+        "avg": 6.257575757575758,
+        "count": 33,
+        "image": null
+      },
+      {
+        "name": "Acci\u00f3n",
+        "avg": 6.219130434782609,
+        "count": 345,
+        "image": null
+      },
+      {
+        "name": "Pel\u00edcula de TV",
+        "avg": 5.966666666666667,
+        "count": 6,
+        "image": null
+      }
+    ]
+  },
+  "recent": {
+    "total": 914,
+    "avg": 6.38,
+    "evolution": [
+      {
+        "year": 2013,
+        "avg": 6.4
+      },
+      {
+        "year": 2014,
+        "avg": 6.069565217391304
+      },
+      {
+        "year": 2015,
+        "avg": 6.1558441558441555
+      },
+      {
+        "year": 2016,
+        "avg": 6.16027397260274
+      },
+      {
+        "year": 2017,
+        "avg": 6.40875
+      },
+      {
+        "year": 2018,
+        "avg": 6.498571428571428
+      },
+      {
+        "year": 2019,
+        "avg": 6.393421052631579
+      },
+      {
+        "year": 2020,
+        "avg": 6.608421052631579
+      },
+      {
+        "year": 2021,
+        "avg": 6.279268292682927
+      },
+      {
+        "year": 2022,
+        "avg": 6.516666666666667
+      },
+      {
+        "year": 2023,
+        "avg": 6.4481012658227845
+      },
+      {
+        "year": 2024,
+        "avg": 6.354054054054054
+      },
+      {
+        "year": 2025,
+        "avg": 6.603571428571429
       }
     ],
     "distribution": [
       0,
       0,
       2,
-      12,
-      95,
-      622,
-      408,
-      109,
-      7,
+      9,
+      112,
+      568,
+      197,
+      26,
+      0,
       0
-    ]
-  },
-  "recent": {
-    "total": 914,
-    "avg": 6.38,
-    "directors": [
-      {
-        "name": "Alex Garland",
-        "avg": 7.4,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Alex_Garland_2018.jpg/440px-Alex_Garland_2018.jpg"
-      },
-      {
-        "name": "Aaron Sorkin",
-        "avg": 7.4,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Aaron_Sorkin_2012.jpg/440px-Aaron_Sorkin_2012.jpg"
-      },
-      {
-        "name": "Damien Chazelle",
-        "avg": 7.3,
-        "count": 4,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Damien_Chazelle_2014.jpg/440px-Damien_Chazelle_2014.jpg"
-      },
-      {
-        "name": "Rian Johnson",
-        "avg": 7.066666666666666,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rian_Johnson_by_Gage_Skidmore.jpg/440px-Rian_Johnson_by_Gage_Skidmore.jpg"
-      },
-      {
-        "name": "Jordan Peele",
-        "avg": 7.033333333333333,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Jordan_Peele_2019.jpg/440px-Jordan_Peele_2019.jpg"
-      },
-      {
-        "name": "David Fincher",
-        "avg": 7.025,
-        "count": 4,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/David_Fincher_Cannes_2007.jpg/440px-David_Fincher_Cannes_2007.jpg"
-      },
-      {
-        "name": "Clint Eastwood",
-        "avg": 6.98,
-        "count": 5,
-        "image": "/8TwdCfeOZH7ucRlfLZ6wObxa7cO.jpg"
-      },
-      {
-        "name": "Christopher McQuarrie",
-        "avg": 6.98,
-        "count": 5,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Christopher_McQuarrie_by_Gage_Skidmore.jpg/440px-Christopher_McQuarrie_by_Gage_Skidmore.jpg"
-      },
-      {
-        "name": "Steven Spielberg",
-        "avg": 6.95,
-        "count": 8,
-        "image": "/tZxcg19YQ3e8fJ0pOs7xjGYlxsw.jpg"
-      },
-      {
-        "name": "Fernando Meirelles",
-        "avg": 6.933333333333334,
-        "count": 3,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Fernando_meirelles.jpg/440px-Fernando_meirelles.jpg"
-      }
     ],
+    "directors": [],
     "actors": [
       {
         "name": "Emma Stone",
         "avg": 7.4,
         "count": 5,
-        "image": "/cZ8a3QvAnj2cgcgVL6g4XaqPzpL.jpg"
+        "image": "img/Emma_Stone.jpg"
       },
       {
         "name": "Mark Rylance",
         "avg": 7.26,
         "count": 5,
-        "image": "/bztEZRyXrvW3Pg1fexNASXlZrq7.jpg"
+        "image": "img/Mark_Rylance.jpg"
       },
       {
         "name": "Sam Rockwell",
         "avg": 7.22,
         "count": 5,
-        "image": "/vYpWxV0bnUgKo7SdasfGP9HttUq.jpg"
+        "image": "img/Sam_Rockwell.jpg"
       },
       {
         "name": "Sarah Paulson",
         "avg": 7.14,
         "count": 5,
-        "image": "/tJnhBV516yrekR3hTDUw15UMbxS.jpg"
+        "image": "img/Sarah_Paulson.jpg"
       },
       {
         "name": "Casey Affleck",
         "avg": 7.12,
         "count": 5,
-        "image": "/304ilSygaCRWykoBWAL67TOw8g9.jpg"
+        "image": "img/Casey_Affleck.jpg"
       },
       {
         "name": "Helena Bonham Carter",
         "avg": 7.12,
         "count": 5,
-        "image": "/hJMbNSPJ2PCahsP3rNEU39C8GWU.jpg"
+        "image": "img/Helena_Bonham_Carter.jpg"
       },
       {
         "name": "Michael Cera",
         "avg": 7.04,
         "count": 5,
-        "image": "/lFKyW2C7xj7X4nWpOEbVIDGOKrH.jpg"
+        "image": "img/Michael_Cera.jpg"
       },
       {
         "name": "Meryl Streep",
         "avg": 7.033333333333333,
         "count": 6,
-        "image": "/emAAzyK1rJ6aiMi0wsWYp51EC3h.jpg"
+        "image": "img/Meryl_Streep.jpg"
       },
       {
         "name": "Tom Hollander",
         "avg": 6.966666666666667,
         "count": 6,
-        "image": "/e4etEWa5PmP8EoHkJvZWbyXEZcM.jpg"
+        "image": "img/Tom_Hollander.jpg"
       },
       {
         "name": "Jon Hamm",
         "avg": 6.96,
         "count": 5,
-        "image": "/mrXE5fZbEDPc7BEE5G21J6qrwzi.jpg"
-      },
-      {
-        "name": "Margot Robbie",
-        "avg": 6.957142857142857,
-        "count": 7,
-        "image": "/euDPyqLnuwaWMHajcU3oZ9uZezR.jpg"
-      },
-      {
-        "name": "John Lithgow",
-        "avg": 6.957142857142857,
-        "count": 7,
-        "image": "/8Y1sjBdnVR483S8PrnAQzlESwhx.jpg"
+        "image": "img/Jon_Hamm.jpg"
       }
     ],
     "genres": [
@@ -412,228 +442,188 @@ const PROFILE_DATA = {
         "avg": 6.426712328767123,
         "count": 146,
         "image": null
+      },
+      {
+        "name": "Terror",
+        "avg": 6.371287128712871,
+        "count": 101,
+        "image": null
+      },
+      {
+        "name": "Comedia",
+        "avg": 6.362815884476534,
+        "count": 277,
+        "image": null
+      },
+      {
+        "name": "Pel\u00edcula de TV",
+        "avg": 6.36,
+        "count": 5,
+        "image": null
+      },
+      {
+        "name": "Ciencia ficci\u00f3n",
+        "avg": 6.356521739130435,
+        "count": 161,
+        "image": null
+      },
+      {
+        "name": "Suspense",
+        "avg": 6.2784313725490195,
+        "count": 408,
+        "image": null
+      },
+      {
+        "name": "Crimen",
+        "avg": 6.260730593607306,
+        "count": 219,
+        "image": null
+      },
+      {
+        "name": "B\u00e9lica",
+        "avg": 6.239130434782608,
+        "count": 23,
+        "image": null
+      },
+      {
+        "name": "Acci\u00f3n",
+        "avg": 6.173333333333333,
+        "count": 240,
+        "image": null
       }
-    ],
-    "distribution": [
-      0,
-      0,
-      2,
-      8,
-      59,
-      478,
-      301,
-      63,
-      3,
-      0
     ]
   },
-  "evolution": [
-    {
-      "year": "2011",
-      "avg": 6.563839285714286,
-      "count": 224
-    },
-    {
-      "year": "2012",
-      "avg": 5.96875,
-      "count": 32
-    },
-    {
-      "year": "2013",
-      "avg": 6.488888888888889,
-      "count": 90
-    },
-    {
-      "year": "2014",
-      "avg": 6.069565217391304,
-      "count": 69
-    },
-    {
-      "year": "2015",
-      "avg": 6.1558441558441555,
-      "count": 77
-    },
-    {
-      "year": "2016",
-      "avg": 6.16027397260274,
-      "count": 73
-    },
-    {
-      "year": "2017",
-      "avg": 6.40875,
-      "count": 80
-    },
-    {
-      "year": "2018",
-      "avg": 6.498571428571428,
-      "count": 70
-    },
-    {
-      "year": "2019",
-      "avg": 6.393421052631579,
-      "count": 76
-    },
-    {
-      "year": "2020",
-      "avg": 6.608421052631579,
-      "count": 95
-    },
-    {
-      "year": "2021",
-      "avg": 6.279268292682927,
-      "count": 82
-    },
-    {
-      "year": "2022",
-      "avg": 6.516666666666667,
-      "count": 78
-    },
-    {
-      "year": "2023",
-      "avg": 6.4481012658227845,
-      "count": 79
-    },
-    {
-      "year": "2024",
-      "avg": 6.354054054054054,
-      "count": 74
-    },
-    {
-      "year": "2025",
-      "avg": 6.603571428571429,
-      "count": 56
-    }
-  ],
   "psychology": {
     "guilty": [
       {
         "t": "Rabos: El Musical",
-        "m": 7.3,
-        "p": 4.442,
         "d": 2.8579999999999997,
-        "img": "/kpvzSsSPE3YmcRrRUAIvx9nPT8S.jpg"
+        "img": "img/poster_Rabos_El_Musical.jpg"
+      },
+      {
+        "t": "Kiss Kiss Bang Bang",
+        "d": 1.8360000000000003,
+        "img": "img/poster_Kiss_Kiss_Bang_Bang.jpg"
+      },
+      {
+        "t": "El extraordinario viaje de T.S. Spivet",
+        "d": 1.7000000000000002,
+        "img": "img/poster_El_extraordinario_viaje_de_TS_Spivet.jpg"
+      },
+      {
+        "t": "Ver\u00f3nica",
+        "d": 1.6680000000000001,
+        "img": "img/poster_Ver\u00f3nica.jpg"
+      },
+      {
+        "t": "El nuevo Nuevo Testamento",
+        "d": 1.6540000000000008,
+        "img": "img/poster_El_nuevo_Nuevo_Testamento.jpg"
+      },
+      {
+        "t": "La cuarta fase",
+        "d": 1.6500000000000004,
+        "img": "img/poster_La_cuarta_fase.jpg"
       },
       {
         "t": "Una vida a lo grande",
-        "m": 7,
-        "p": 5.373,
         "d": 1.6269999999999998,
-        "img": "/hpOWb2nUHno4FBzpl6UWo0M1tFK.jpg"
+        "img": "img/poster_Una_vida_a_lo_grande.jpg"
       },
       {
-        "t": "Las Maggie Moore(s)",
-        "m": 7.3,
-        "p": 5.752,
-        "d": 1.548,
-        "img": "/5Uos457Qe5OeZOnPdEst1PmHYZ0.jpg"
+        "t": "Sully",
+        "d": 1.604000000000001,
+        "img": "img/poster_Sully.jpg"
       },
       {
-        "t": "Odette, una comedia sobre la felicidad",
-        "m": 7,
-        "p": 5.664,
-        "d": 1.3360000000000003,
-        "img": "/dwpuTxb9JkBhPBqZs13iTpTjOAw.jpg"
+        "t": "Tiempo",
+        "d": 1.5730000000000004,
+        "img": "img/poster_Tiempo.jpg"
       },
       {
-        "t": "Gamer (Juegan contigo)",
-        "m": 7,
-        "p": 5.706,
-        "d": 1.2939999999999996,
-        "img": "/pDbp1SSzxpCFOcjvIe0rDTwOOoJ.jpg"
-      },
-      {
-        "t": "El \u00faltimo voto",
-        "m": 7,
-        "p": 5.712,
-        "d": 1.2880000000000003,
-        "img": "/raKrwkgSvYJ5weKKPS2yKJJWvrU.jpg"
+        "t": "Money Monster",
+        "d": 1.5670000000000002,
+        "img": "img/poster_Money_Monster.jpg"
       }
     ],
     "haters": [
       {
         "t": "4 meses, 3 semanas, 2 d\u00edas",
-        "m": 5,
-        "p": 7.549,
-        "d": -2.5490000000000004,
-        "img": "/taoajT5Cg8corabvH0EMXAPklNh.jpg"
+        "d": 2.5490000000000004,
+        "img": "img/poster_4_meses_3_semanas_2_d\u00edas.jpg"
       },
       {
         "t": "Un d\u00eda de furia",
-        "m": 5,
-        "p": 7.389,
-        "d": -2.3890000000000002,
-        "img": "/kFBDnvgkSsVrBAjej1RriGOB8BV.jpg"
+        "d": 2.3890000000000002,
+        "img": "img/poster_Un_d\u00eda_de_furia.jpg"
       },
       {
         "t": "Serenity",
-        "m": 5,
-        "p": 7.363,
-        "d": -2.3630000000000004,
-        "img": "/zD81lzAEsTeEDl8f1C6t4USRihg.jpg"
+        "d": 2.3630000000000004,
+        "img": "img/poster_Serenity.jpg"
       },
       {
         "t": "Posesi\u00f3n infernal",
-        "m": 5,
-        "p": 7.3,
-        "d": -2.3,
-        "img": "/vgQDogdqPrSk2zRdy2JESq2LGvy.jpg"
+        "d": 2.3,
+        "img": "img/poster_Posesi\u00f3n_infernal.jpg"
+      },
+      {
+        "t": "Pi, fe en el caos",
+        "d": 2.1100000000000003,
+        "img": "img/poster_Pi_fe_en_el_caos.jpg"
+      },
+      {
+        "t": "Ghost World",
+        "d": 2.0759999999999996,
+        "img": "img/poster_Ghost_World.jpg"
+      },
+      {
+        "t": "Equilibrium",
+        "d": 2.0439999999999996,
+        "img": "img/poster_Equilibrium.jpg"
+      },
+      {
+        "t": "In the loop",
+        "d": 2.0220000000000002,
+        "img": "img/poster_In_the_loop.jpg"
+      },
+      {
+        "t": "La zona de inter\u00e9s",
+        "d": 2.01,
+        "img": "img/poster_La_zona_de_inter\u00e9s.jpg"
+      },
+      {
+        "t": "Ronin",
+        "d": 2,
+        "img": "img/poster_Ronin.jpg"
       }
     ]
   },
   "decades": [
     {
-      "name": "1940s",
-      "avg": 7.4,
-      "count": 5
-    },
-    {
-      "name": "1950s",
-      "avg": 7.266666666666667,
-      "count": 9
-    },
-    {
-      "name": "1960s",
-      "avg": 6.858333333333333,
-      "count": 12
-    },
-    {
-      "name": "1970s",
-      "avg": 7.1,
-      "count": 12
-    },
-    {
-      "name": "1980s",
-      "avg": 6.679166666666666,
-      "count": 24
-    },
-    {
-      "name": "1990s",
-      "avg": 6.603370786516854,
-      "count": 89
-    },
-    {
-      "name": "2000s",
-      "avg": 6.396283783783784,
-      "count": 296
-    },
-    {
-      "name": "2010s",
-      "avg": 6.320555555555556,
-      "count": 540
-    },
-    {
       "name": "2020s",
-      "avg": 6.378260869565217,
-      "count": 253
+      "avg": 6.871428571428572
     }
   ],
   "keywords": [
+    {
+      "text": "las",
+      "weight": 5
+    },
+    {
+      "text": "los",
+      "weight": 4
+    },
     {
       "text": "vid",
       "weight": 3
     },
     {
       "text": "vida",
+      "weight": 3
+    },
+    {
+      "text": "del",
       "weight": 3
     },
     {
@@ -706,6 +696,34 @@ const PROFILE_DATA = {
     },
     {
       "text": "res",
+      "weight": 2
+    },
+    {
+      "text": "pla",
+      "weight": 2
+    },
+    {
+      "text": "plan",
+      "weight": 2
+    },
+    {
+      "text": "plane",
+      "weight": 2
+    },
+    {
+      "text": "planet",
+      "weight": 2
+    },
+    {
+      "text": "con",
+      "weight": 2
+    },
+    {
+      "text": "mun",
+      "weight": 2
+    },
+    {
+      "text": "mund",
       "weight": 2
     }
   ]

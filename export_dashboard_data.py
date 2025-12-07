@@ -1,12 +1,18 @@
+
 import json
+import collections
 from collections import defaultdict, Counter
 import statistics
 from datetime import datetime
+import os
+import requests
+import shutil
 
 FILE_PATH = 'pelis_series_vistas.json'
 CUTOFF_DATE = "2013-12-07"
 
 # Hardcoded images for top directors using Wikipedia/Commons (Reliable public URLs)
+# Falls back to TMDB relative paths if not in this list
 MANUAL_IMAGES = {
     "Martin McDonagh": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Martin_McDonagh_2012.jpg/440px-Martin_McDonagh_2012.jpg",
     "Jean-Pierre Jeunet": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Jean-Pierre_Jeunet_2010.jpg/440px-Jean-Pierre_Jeunet_2010.jpg",
@@ -26,45 +32,48 @@ MANUAL_IMAGES = {
     "Fernando Meirelles": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Fernando_meirelles.jpg/440px-Fernando_meirelles.jpg", 
     "David Fincher": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/David_Fincher_Cannes_2007.jpg/440px-David_Fincher_Cannes_2007.jpg",
     "Wes Anderson": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Wes_Anderson_Cannes_2012_2.jpg/440px-Wes_Anderson_Cannes_2012_2.jpg",
-    # Keep known TMDB ones for others if wanted, or use these.
     "Christopher Nolan": "/xuAIuYSmsUzKlUMBFhtV7sHCmFB.jpg",
     "Steven Spielberg": "/tZxcg19YQ3e8fJ0pOs7xjGYlxsw.jpg",
     "Quentin Tarantino": "/1gjcpAa99FAOWGnrUvHEXXsRs7o.jpg"
 }
 
-def load_data():
-    with open(FILE_PATH, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    return [d for d in data if d.get('tipo') == 'pelicula' and d.get('mi_nota') is not None]
+def download_image(name, url_or_path):
+    """Downloads image to img/ folder and returns local path."""
+    if not url_or_path: return None
+    
+    if not os.path.exists('img'):
+        os.makedirs('img')
 
-def get_year_watched(item):
-    d = item.get('fecha_puntuacion_iso')
-    if d: return d[:4]
+    # Create safe filename
+    safe_name = "".join([c for c in name if c.isalnum() or c in (' ','-','_')]).strip().replace(' ', '_')
+    filename = f"img/{safe_name}.jpg"
+    
+    # If already exists, return local path
+    if os.path.exists(filename):
+        return filename
+
+    url = url_or_path
+    if not url.startswith('http'):
+        url = f"https://image.tmdb.org/t/p/w200{url_or_path}"
+    
+    try:
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            with open(filename, 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            print(f"Downloaded: {name}")
+            return filename
+    except Exception as e:
+        print(f"Error downloading {name}: {e}")
+        return None
     return None
 
-def get_stats_block(dataset, include_images=True):
-    # Helper to calculate stats for a specific subset of movies
-    # Returns Directors, Actors, Genres, RatingsDst, KPIS
-    
-    total = len(dataset)
-    if total == 0: return None
-    avg = statistics.mean([m['mi_nota'] for m in dataset])
-    
-    # Global manual map for fallbacks (defined at module level or passed in likely better, but for quick fix:)
-    # Actually, let's just use the global variable 'MANUAL_IMAGES' if defined.
-    
-    # Build global image map from actors
-    global_images = {}
-    for m in dataset:
-        for a in m.get('actores', []):
-            if isinstance(a, dict) and a.get('nombre') and a.get('profile_path'):
-                global_images[a['nombre']] = a['profile_path']
-    
-    # Directors & Actors & Genres
+def get_stats_block(dataset, recent_only=False):
     def get_top(key, min_limit, count_limit, include_images=True):
         grouped = defaultdict(list)
-        # We don't need a local images map if we use global, but let's keep it for specific matches
+        images = {}
         
+        # 1. Gather all ratings and potential images
         for m in dataset:
             vals = m.get(key, [])
             rating = m['mi_nota']
@@ -72,152 +81,175 @@ def get_stats_block(dataset, include_images=True):
                 name = v.get('nombre') if isinstance(v, dict) else v
                 if name:
                     grouped[name].append(rating)
+                    if include_images and isinstance(v, dict) and 'profile_path' in v and v['profile_path']:
+                        if name not in images: images[name] = v['profile_path']
         
+        # 2. Filter and Stats
         stats = []
         for name, ratings in grouped.items():
             if len(ratings) >= min_limit:
-                # Try to find an image
-                img = None
-                if include_images:
-                    img = global_images.get(name)
-                    # Fallback to manual hardcoded map
-                    if not img and name in MANUAL_IMAGES:
-                         img = MANUAL_IMAGES[name]
                 
+                # Determine image source
+                img_src = None
+                if key == 'directors' and name in MANUAL_IMAGES:
+                    img_src = MANUAL_IMAGES[name]
+                elif name in images:
+                    img_src = images[name]
+                
+                # Download local copy if we have a source
+                local_path = None
+                if include_images and img_src:
+                     # Download!
+                     local_path = download_image(name, img_src)
+
                 stats.append({
                     'name': name,
                     'avg': statistics.mean(ratings),
                     'count': len(ratings),
-                    'image': img
+                    'image': local_path 
                 })
+        
         stats.sort(key=lambda x: x['avg'], reverse=True)
         return stats[:count_limit]
 
-    directors = get_top('directores', 3, 10, include_images=True)
-    actors = get_top('actores', 5, 12, include_images=True)
-    genres = get_top('generos', 5, 10, include_images=False)
-    
-    # Rating Distribution
-    ratings = [round(m['mi_nota']) for m in dataset]
-    dist = Counter(ratings)
-    # Ensure all 1-10 keys exist
-    dist_arr = [dist.get(i, 0) for i in range(1, 11)]
+    # Filter dataset if needed
+    if recent_only:
+        filtered = []
+        cutoff = datetime.strptime(CUTOFF_DATE, "%Y-%m-%d")
+        for m in dataset:
+            if m.get('fecha_puntuacion_iso'):
+                try:
+                    d = datetime.strptime(m['fecha_puntuacion_iso'][:10], "%Y-%m-%d")
+                    if d >= cutoff:
+                        filtered.append(m)
+                except:
+                    pass
+        dataset = filtered
 
+    # Yearly stats for evolution
+    years = defaultdict(list)
+    for m in dataset:
+        if m['fecha_puntuacion_iso']:
+            y = int(m['fecha_puntuacion_iso'][:4])
+            years[y].append(m['mi_nota'])
+    evolution = [{'year': y, 'avg': statistics.mean(rs)} for y, rs in sorted(years.items())]
+
+    # Distribution
+    dist = [0]*10
+    total_movies = 0
+    for m in dataset:
+        r = int(m['mi_nota'])
+        if 1 <= r <= 10:
+            dist[r-1] += 1
+            total_movies += 1
+            
     return {
-        'total': total,
-        'avg': round(avg, 2),
-        'directors': directors,
-        'actors': actors,
-        'genres': genres,
-        'distribution': dist_arr
+        'total': total_movies,
+        'avg': round(statistics.mean([m['mi_nota'] for m in dataset]), 2),
+        'evolution': evolution,
+        'distribution': dist,
+        'directors': get_top('directors', 3, 10),
+        'actors': get_top('actores', 5, 10),
+        'genres': get_top('generos', 5, 20, include_images=False)
     }
 
-def get_evolution(movies):
-    years = defaultdict(list)
-    for m in movies:
-        y = get_year_watched(m)
-        if y and int(y) >= 2010: # Focus on reliable recent history + some past
-            years[y].append(m['mi_nota'])
-            
+def analyze_decades(dataset):
+    """Analyze average rating by decade of movie release."""
+    decades = defaultdict(list)
+    for m in dataset:
+        if m.get('fecha_estreno'):
+            try:
+                year = int(m['fecha_estreno'][:4])
+                decade = (year // 10) * 10
+                decades[decade].append(m['mi_nota'])
+            except: pass
+    
     stats = []
-    for y in sorted(years.keys()):
-        stats.append({
-            'year': y,
-            'avg': statistics.mean(years[y]),
-            'count': len(years[y])
-        })
+    for d, ratings in decades.items():
+        if len(ratings) >= 5: # Min 5 movies to count
+            stats.append({'name': str(d)+'s', 'avg': statistics.mean(ratings)})
+    
+    stats.sort(key=lambda x: x['name']) # Sort chronological
     return stats
 
-def get_psychology(movies):
-    # Guilty Pleasures & Haters
+def analyze_keyword_dna(dataset):
+    """Extract most distinctive keywords from highly rated movies."""
+    good_movie_keywords = []
+    for m in dataset:
+        if m['mi_nota'] >= 8 and m.get('titulo_keywords'):
+            good_movie_keywords.extend(m['titulo_keywords'])
+            
+    counts = Counter(good_movie_keywords)
+    # Simple word cloud data
+    return [{'text': k, 'weight': c} for k, c in counts.most_common(30)]
+
+def get_psychology(dataset):
     guilty = []
     haters = []
     
-    for m in movies:
-        my_rading = m['mi_nota']
-        pub_rating = m.get('vote_average_publico', 0)
-        if not pub_rating: continue
+    for m in dataset:
+        my_rating = m.get('mi_nota', 0)
+        public_rating = m.get('vote_average_publico', 0)
         
-        diff = my_rading - pub_rating
-        
-        if my_rading >= 7.0 and pub_rating <= 5.8:
-            guilty.append({'t': m['titulo'], 'm': my_rading, 'p': pub_rating, 'd': diff, 'img': m.get('poster_path')})
+        if my_rating >= 7 and public_rating > 0 and (my_rating - public_rating) >= 1.5:
+            # Download Poster
+            local_poster = download_image(f"poster_{m['titulo']}", m['poster_path']) if m.get('poster_path') else None
+            guilty.append({
+                't': m['titulo'],
+                'd': my_rating - public_rating,
+                'img': local_poster
+            })
             
-        if my_rading <= 5.0 and pub_rating >= 7.3:
-            haters.append({'t': m['titulo'], 'm': my_rading, 'p': pub_rating, 'd': diff, 'img': m.get('poster_path')})
-            
+        if my_rating <= 5 and public_rating >= 7 and (public_rating - my_rating) >= 1.5:
+            # Download Poster
+            local_poster = download_image(f"poster_{m['titulo']}", m['poster_path']) if m.get('poster_path') else None
+            haters.append({
+                't': m['titulo'],
+                'd': public_rating - my_rating,
+                'img': local_poster
+            })
+
     guilty.sort(key=lambda x: x['d'], reverse=True)
-    haters.sort(key=lambda x: x['d']) # most negative first
+    haters.sort(key=lambda x: x['d'], reverse=True)
 
-    return {'guilty': guilty[:6], 'haters': haters[:6]}, None # Retaining tuple return for compatibility with call site
-
-def analyze_decades(movies):
-    decades = defaultdict(list)
-    for m in movies:
-        d = m.get('fecha_estreno_iso')
-        rating = m['mi_nota']
-        if d and len(d) >= 4:
-            year = int(d[:4])
-            decade = f"{(year // 10) * 10}s"
-            decades[decade].append(rating)
-            
-    stats = []
-    for dec, ratings in decades.items():
-        stats.append({
-            'name': dec,
-            'avg': statistics.mean(ratings),
-            'count': len(ratings)
-        })
-    stats.sort(key=lambda x: x['name'])
-    return stats
-
-def analyze_keyword_dna(movies):
-    # Top keywords from highly rated movies (>=8)
-    cnt = Counter()
-    STOP = {'el', 'la', 'los', 'las', 'un', 'una', 'de', 'del', 'y', 'o', 'en', 'a', 'al', 'the', 'of', 'and', 'in'}
-    for m in movies:
-        if m['mi_nota'] >= 8:
-            for k in m.get('titulo_keywords', []):
-                if k.lower() not in STOP and len(k) > 2:
-                    cnt[k] += 1
-    return [{"text": k, "weight": v} for k, v in cnt.most_common(20)]
+    return {
+        'guilty': guilty[:10],
+        'haters': haters[:10]
+    }
 
 def main():
-    movies = load_data()
+    with open(FILE_PATH, 'r') as f:
+        data = json.load(f)
+        
+    print(f"Loaded {len(data)} items.")
     
-    # Split Data
-    recent_movies = [m for m in movies if (m.get('fecha_puntuacion_iso') or "") >= CUTOFF_DATE]
+    # Filter Movies Only
+    movies = [x for x in data if x.get('tipo') == 'pelicula']
+    print(f"Filtered to {len(movies)} movies.")
     
-    # Stats Blocks
-    stats_all = get_stats_block(movies)
-    stats_recent = get_stats_block(recent_movies)
+    # Generate Blocks
+    all_time = get_stats_block(movies, recent_only=False)
+    recent = get_stats_block(movies, recent_only=True)
+    psych = get_psychology(movies)
     
-    # Complex Analysis
-    evolution = get_evolution(movies)
-    psychology, _ = get_psychology(movies)
-    
-    # Re-calc stats (images will pick up global MANUAL_IMAGES automatically)
-    stats_all = get_stats_block(movies)
-    stats_recent = get_stats_block(recent_movies)
-    
-    # New Metrics
-    decades = analyze_decades(movies)
-    keywords = analyze_keyword_dna(movies)
-    
-    export_data = {
-        'all': stats_all,
-        'recent': stats_recent,
-        'evolution': evolution,
-        'psychology': psychology,
-        'decades': decades,
-        'keywords': keywords
+    # Global metrics (all time)
+    decade_stats = analyze_decades(movies)
+    keyword_stats = analyze_keyword_dna(movies)
+
+    final_data = {
+        'all': all_time,
+        'recent': recent,
+        'psychology': psych,
+        'decades': decade_stats,
+        'keywords': keyword_stats
     }
     
-    js_content = f"const PROFILE_DATA = {json.dumps(export_data, indent=2)};"
+    js_content = f"const PROFILE_DATA = {json.dumps(final_data, indent=2)};"
     
-    with open("dashboard_data.js", "w", encoding='utf-8') as f:
+    with open('dashboard_data.js', 'w') as f:
         f.write(js_content)
+        
     print("Expanded JS Data File generated.")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

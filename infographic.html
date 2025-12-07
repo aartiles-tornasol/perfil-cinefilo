@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinephile DNA de Alex</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="dashboard_data.js"></script>
+    <style>
+        :root {
+            --bg: #0b0c10;
+            --card-bg: #1f2833;
+            --text-main: #c5c6c7;
+            --accent: #66fcf1;
+            --accent-dark: #45a29e;
+            --gold: #ffd700;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HEADER & TABS */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.3);
+            object-fit: contain;
+            /* Ensure logo fits */
+            background: #fff;
+            /* Ensure logo visible if transparent */
+        }
+
+        h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin: 0 0 5px 0;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 2px solid var(--accent-dark);
+            color: var(--accent);
+            padding: 10px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            box-shadow: 0 0 15px var(--accent-dark);
+        }
+
+        /* KPI GRID */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .kpi-val {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .kpi-label {
+            color: var(--accent-dark);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* CHARTS */
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* IMAGES GRID (Directors/Actors) */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .profile-card {
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-dark);
+            margin-bottom: 8px;
+        }
+
+        .profile-name {
+            font-size: 0.8rem;
+            color: white;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .profile-stat {
+            font-size: 0.75rem;
+            color: var(--gold);
+        }
+
+        /* PSYCHOLOGY SECTION */
+        .psych-section {
+            background: rgba(31, 40, 51, 0.5);
+            border-left: 4px solid var(--danger);
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .movie-list {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .movie-card {
+            min-width: 110px;
+            max-width: 110px;
+            text-align: center;
+        }
+
+        .poster {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        .poster:hover {
+            transform: scale(1.05);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .badge-guilty {
+            background: var(--gold);
+            color: black;
+        }
+
+        .badge-hater {
+            background: var(--danger);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <img src="avatar.png" class="avatar" alt="Avatar">
+            <h1>CINEPHILE DNA</h1>
+            <div class="subtitle">Análisis del perfil de Alex</div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('all')">HISTÓRICO</button>
+                <button class="tab-btn" onclick="switchTab('recent')">ÚLTIMOS 12 AÑOS</button>
+            </div>
+        </header>
+
+        <!-- KPI -->
+        <div class="kpi-grid">
+            <div class="card" style="text-align: center;">
+                <span class="kpi-val" id="kpi-total">0</span>
+                <span class="kpi-label">Películas Vistas</span>
+            </div>
+            <div class="card" style="text-align: center;">
+                <span class="kpi-val" id="kpi-avg" style="color: var(--gold)">0.0</span>
+                <span class="kpi-label">Nota Media</span>
+            </div>
+            <div class="card" style="padding: 10px 20px;">
+                <!-- New Distribution Chart Design -->
+                <h4
+                    style="margin:5px 0 10px 0; color:#aaa; font-size:0.8rem; text-transform:uppercase; text-align:center;">
+                    Distribución</h4>
+                <div class="chart-container" style="height: 100px;">
+                    <canvas id="distChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- EVOLUTION -->
+        <h2 style="border-bottom: 1px solid #333; padding-bottom: 10px;">📈 Evolución del "Cascarrabias"</h2>
+        <div class="card" style="margin-bottom: 40px;">
+            <div class="chart-container">
+                <canvas id="evoChart"></canvas>
+            </div>
+        </div>
+
+        <!-- NEW METRICS ROW -->
+        <div class="chart-row">
+            <div class="card">
+                <h3>⏳ Décadas Favoritas</h3>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="decadesChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3>🗝️ Keyword DNA</h3>
+                <div id="keywords-container"
+                    style="display:flex; flex-wrap:wrap; gap:8px; align-content: flex-start; height: 250px; overflow-y:auto;">
+                    <!-- Tags injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PEOPLE -->
+        <div class="chart-row">
+            <div class="card">
+                <h3>🎬 Top directores (Calidad)</h3>
+                <div class="profile-grid" id="directors-container"></div>
+            </div>
+            <div class="card">
+                <h3>🌟 Top actores (Calidad)</h3>
+                <div class="profile-grid" id="actors-container"></div>
+            </div>
+        </div>
+
+        <!-- GENRES -->
+        <div class="card" style="margin-bottom: 40px;">
+            <h3>🧬 ADN de Géneros</h3>
+            <div class="chart-container" style="height: 250px;">
+                <canvas id="genresChart"></canvas>
+            </div>
+        </div>
+
+        <!-- PSYCHOLOGY -->
+        <div class="psych-section">
+            <h2 style="color: var(--danger)">🧠 Psicología Inversa</h2>
+
+            <h3>🫣 Me gustan, al resto no</h3>
+            <div class="movie-list" id="guilty-container"></div>
+
+            <h3 style="margin-top:30px">🤬 Pues a mi no me gustaron tanto ...")</h3>
+            <div class="subtitle" style="font-size: 0.9rem; margin-top:-10px;">(Películas aclamadas que tú suspendiste)
+            </div>
+            <div class="movie-list" id="haters-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data Check
+        if (typeof PROFILE_DATA === 'undefined') {
+            document.body.innerHTML = '<h2 style="color:red; text-align:center">Error: dashboard_data.js no encontrado o corrupto.</h2>';
+        }
+
+        const d = PROFILE_DATA;
+        let currentMode = 'all';
+        let charts = {};
+
+        function renderProfiles(containerId, list) {
+            const el = document.getElementById(containerId);
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div style="color:#666; padding:20px;">Sin datos suficientes</div>';
+                return;
+            }
+            el.innerHTML = list.map(item => {
+                let imgSrc;
+                if (!item.image) {
+                    imgSrc = `https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}`;
+                } else if (item.image.startsWith('http')) {
+                    imgSrc = item.image;
+                } else {
+                    imgSrc = `https://image.tmdb.org/t/p/w200${item.image}`;
+                }
+
+                return `
+                <div class="profile-card">
+                    <img src="${imgSrc}" class="profile-img" 
+                         onerror="this.src='https://via.placeholder.com/80x80/333/ccc?text=${item.name.charAt(0)}'">
+                    <div class="profile-name">${item.name}</div>
+                    <div class="profile-stat">★ ${item.avg.toFixed(2)}</div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function renderMovies(containerId, list, type) {
+            const el = document.getElementById(containerId);
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div style="color:#666">No hay películas en esta categoría.</div>';
+                return;
+            }
+            el.innerHTML = list.map(m => `
+                <div class="movie-card">
+                    <img src="https://image.tmdb.org/t/p/w200${m.img || ''}" class="poster"
+                         onerror="this.src='https://via.placeholder.com/100x150/333/ccc?text=No+Img'">
+                    <div style="font-size:0.75rem; margin-top:8px; line-height:1.2; color: #ccc">${m.t}</div>
+                    <div class="badge ${type === 'guilty' ? 'badge-guilty' : 'badge-hater'}">
+                        ${type === 'guilty' ? '+' + m.d.toFixed(1) : m.d.toFixed(1)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initCharts() {
+            // New Distribution Chart (Vertical Gradient Bars)
+            const ctxDist = document.getElementById('distChart').getContext('2d');
+            const gradient = ctxDist.createLinearGradient(0, 0, 0, 100);
+            gradient.addColorStop(0, '#66fcf1');
+            gradient.addColorStop(1, '#45a29e');
+
+            charts.dist = new Chart(ctxDist, {
+                type: 'bar',
+                data: {
+                    labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    datasets: [{
+                        label: 'Vistas',
+                        data: [],
+                        backgroundColor: gradient,
+                        borderRadius: 3,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { color: '#666', font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+
+            // Evolution Chart (Smoother Line area)
+            const ctxEvo = document.getElementById('evoChart').getContext('2d');
+            charts.evo = new Chart(ctxEvo, {
+                type: 'line',
+                data: {
+                    labels: d.evolution.map(x => x.year),
+                    datasets: [{
+                        label: 'Nota Media',
+                        data: d.evolution.map(x => x.avg),
+                        borderColor: '#ffd700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#0b0c10',
+                        pointBorderColor: '#ffd700',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(31, 40, 51, 0.9)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 5, max: 8,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#666' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#888' }
+                        }
+                    }
+                }
+            });
+
+            // Genres Chart (New)
+            const ctxGen = document.getElementById('genresChart').getContext('2d');
+            charts.genres = new Chart(ctxGen, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Nota Media',
+                        data: [],
+                        backgroundColor: '#e50914',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { min: 5, max: 9, grid: { color: '#333' } } }
+                }
+            });
+
+            // Decades Chart
+            const ctxDec = document.getElementById('decadesChart').getContext('2d');
+            charts.decades = new Chart(ctxDec, {
+                type: 'radar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Nota Media',
+                        data: [],
+                        backgroundColor: 'rgba(102, 252, 241, 0.2)',
+                        borderColor: '#66fcf1',
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#333' },
+                            grid: { color: '#333' },
+                            pointLabels: { color: '#ccc' },
+                            suggestedMin: 5,
+                            suggestedMax: 8
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderKeywords(containerId, list) {
+            const el = document.getElementById(containerId);
+            if (!list || list.length === 0) {
+                el.innerHTML = '<div style="color:#666">No keywords data</div>';
+                return;
+            }
+            // Simple Tag Cloud Style
+            el.innerHTML = list.map(k => {
+                const size = 0.8 + (k.weight * 0.1);
+                return `<span style="background:var(--card-bg); border:1px solid var(--accent-dark); color:var(--text-main); padding:4px 8px; border-radius:12px; font-size:${Math.min(size, 1.5)}rem">${k.text}</span>`;
+            }).join('');
+        }
+
+        function updateView(mode) {
+            const data = d[mode]; // Current mode (all/recent) for standard blocks
+
+            // KPIs
+            document.getElementById('kpi-total').innerText = data.total;
+            document.getElementById('kpi-avg').innerText = data.avg;
+
+            // Profiles
+            renderProfiles('directors-container', data.directors);
+            renderProfiles('actors-container', data.actors);
+
+            // Chart Updates
+            charts.dist.data.datasets[0].data = data.distribution;
+            charts.dist.update();
+
+            // Genre Updates
+            charts.genres.data.labels = data.genres.map(g => g.name);
+            charts.genres.data.datasets[0].data = data.genres.map(g => g.avg);
+            charts.genres.update();
+
+            // GLOBAL METRICS (Not split by mode in Python script currently, but accessible)
+            if (d.decades) {
+                charts.decades.data.labels = d.decades.map(x => x.name);
+                charts.decades.data.datasets[0].data = d.decades.map(x => x.avg);
+                charts.decades.update();
+            }
+
+            if (d.keywords) {
+                renderKeywords('keywords-container', d.keywords);
+            }
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateView(mode);
+        }
+
+        // INIT
+        try {
+            initCharts();
+            updateView('all');
+
+            // Static Content (Psychology)
+            renderMovies('guilty-container', d.psychology.guilty, 'guilty');
+            renderMovies('haters-container', d.psychology.haters, 'hater');
+        } catch (e) {
+            console.error("Initialization Error:", e);
+            document.body.innerHTML += `<div style="color:red; margin:20px">Error JS: ${e.message}</div>`;
+        }
+
+    </script>
+</body>
+
+</html>

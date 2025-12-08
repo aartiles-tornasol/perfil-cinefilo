@@ -8,6 +8,9 @@ import re
 import json
 import os
 
+import requests
+import shutil
+
 # MD Files
 MD_FILES = {
     'directors_all': 'Top_20_Directores.md',
@@ -18,39 +21,93 @@ MD_FILES = {
     'psychology': 'Reporte_Psicologia.md',
 }
 
-# Image mappings for directors
-DIRECTOR_IMAGES = {
-    "Martin McDonagh": "img/Martin_McDonagh.jpg",
-    "Jean-Pierre Jeunet": "img/Jean_Pierre_Jeunet.jpg",
-    "Alex Garland": "img/Alex_Garland.jpg",
-    "Aaron Sorkin": "img/Aaron_Sorkin.jpg",
-    "Marc Forster": "img/Marc_Forster.jpg",
-    "Damien Chazelle": "img/Damien_Chazelle.jpg",
-    "Rian Johnson": "img/Rian_Johnson.jpg",
-    "Baz Luhrmann": "img/Baz_Luhrmann.jpg",
-    "Jordan Peele": "img/Jordan_Peele.jpg",
-    "Park Chan-wook": "img/Park_Chan_wook.jpg",
-    "Alfred Hitchcock": "img/Alfred_Hitchcock.jpg",
-    "Quentin Tarantino": "img/Quentin_Tarantino.jpg",
-    "Steven Spielberg": "img/Steven_Spielberg.jpg",
-    "Christopher Nolan": "img/Christopher_Nolan.jpg",
-    "Wes Anderson": "img/Wes_Anderson.jpg",
-    "David Fincher": "img/David_Fincher.jpg",
-    "M. Night Shyamalan": "img/M_Night_Shyamalan.jpg",
+# Wikipedia image URLs for directors (reliable public URLs)
+WIKIPEDIA_DIRECTOR_IMAGES = {
+    "Martin McDonagh": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Martin_McDonagh_2012.jpg/440px-Martin_McDonagh_2012.jpg",
+    "Jean-Pierre Jeunet": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Jean-Pierre_Jeunet_2010.jpg/440px-Jean-Pierre_Jeunet_2010.jpg",
+    "Alex Garland": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Alex_Garland_2018.jpg/440px-Alex_Garland_2018.jpg",
+    "Aaron Sorkin": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Aaron_Sorkin_2012.jpg/440px-Aaron_Sorkin_2012.jpg",
+    "Marc Forster": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Marc_Forster_2012.jpg/440px-Marc_Forster_2012.jpg",
+    "Damien Chazelle": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Damien_Chazelle_2017.jpg/440px-Damien_Chazelle_2017.jpg",
+    "Rian Johnson": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rian_Johnson_by_Gage_Skidmore.jpg/440px-Rian_Johnson_by_Gage_Skidmore.jpg",
+    "Baz Luhrmann": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Baz_Luhrmann_2013.jpg/440px-Baz_Luhrmann_2013.jpg",
+    "Jordan Peele": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Jordan_Peele_2019.jpg/440px-Jordan_Peele_2019.jpg",
+    "Park Chan-wook": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Park_Chan-wook_2017.jpg/440px-Park_Chan-wook_2017.jpg",
+    "Alfred Hitchcock": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Alfred_Hitchcock_1955.jpg/440px-Alfred_Hitchcock_1955.jpg",
+    "Quentin Tarantino": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Quentin_Tarantino_by_Gage_Skidmore.jpg/440px-Quentin_Tarantino_by_Gage_Skidmore.jpg",
+    "Steven Spielberg": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Steven_Spielberg_by_Gage_Skidmore.jpg/440px-Steven_Spielberg_by_Gage_Skidmore.jpg",
+    "Christopher Nolan": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Christopher_Nolan_Cannes_2018.jpg/440px-Christopher_Nolan_Cannes_2018.jpg",
+    "Wes Anderson": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Wes_Anderson_Cannes_2012_2.jpg/440px-Wes_Anderson_Cannes_2012_2.jpg",
+    "David Fincher": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/David_Fincher_Cannes_2007.jpg/440px-David_Fincher_Cannes_2007.jpg",
+    "M. Night Shyamalan": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/M._Night_Shyamalan_2018.jpg/440px-M._Night_Shyamalan_2018.jpg",
+    "Clint Eastwood": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Clint_Eastwood_2023.jpg/440px-Clint_Eastwood_2023.jpg",
+    "Christopher McQuarrie": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Christopher_McQuarrie_by_Gage_Skidmore.jpg/440px-Christopher_McQuarrie_by_Gage_Skidmore.jpg",
+    "Fernando Meirelles": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Fernando_meirelles.jpg/440px-Fernando_meirelles.jpg",
+    "Craig Gillespie": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Craig_Gillespie_2018.jpg/440px-Craig_Gillespie_2018.jpg",
+    "Ron Howard": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ron_Howard_2014.jpg/440px-Ron_Howard_2014.jpg",
+    "Oriol Paulo": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Oriol_Paulo_2017.jpg/440px-Oriol_Paulo_2017.jpg",
+    "Kenneth Branagh": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Kenneth_Branagh_2018.jpg/440px-Kenneth_Branagh_2018.jpg",
+    "Bong Joon-ho": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Bong_Joon-ho_2017.jpg/440px-Bong_Joon-ho_2017.jpg",
 }
 
-ACTOR_IMAGES = {
-    "Helena Bonham Carter": "img/Helena_Bonham_Carter.jpg",
-    "Michael Cera": "img/Michael_Cera.jpg",
-    "Meryl Streep": "img/Meryl_Streep.jpg",
-    "Tom Hollander": "img/Tom_Hollander.jpg",
-    "Jon Hamm": "img/Jon_Hamm.jpg",
-    "Emma Stone": "img/Emma_Stone.jpg",
-    "Mark Rylance": "img/Mark_Rylance.jpg",
-    "Sam Rockwell": "img/Sam_Rockwell.jpg",
-    "J.K. Simmons": "img/J_K_Simmons.jpg",
-    "Mark Ruffalo": "img/Mark_Ruffalo.jpg",
+# Wikipedia image URLs for actors
+WIKIPEDIA_ACTOR_IMAGES = {
+    "James Stewart": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/James_Stewart_publicity_photo_1960s.jpg/440px-James_Stewart_publicity_photo_1960s.jpg",
+    "Elias Koteas": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Elias_Koteas_2008.jpg/440px-Elias_Koteas_2008.jpg",
+    "Tim Roth": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Tim_Roth_2013.jpg/440px-Tim_Roth_2013.jpg",
+    "Harvey Keitel": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Harvey_Keitel_Cannes_2018.jpg/440px-Harvey_Keitel_Cannes_2018.jpg",
+    "Mahershala Ali": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Mahershala_Ali_2019.jpg/440px-Mahershala_Ali_2019.jpg",
+    "Mark Rylance": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Mark_Rylance_2016.jpg/440px-Mark_Rylance_2016.jpg",
+    "Emma Stone": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Emma_Stone_2018.jpg/440px-Emma_Stone_2018.jpg",
+    "Sarah Paulson": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Sarah_Paulson_2018.jpg/440px-Sarah_Paulson_2018.jpg",
+    "Sam Rockwell": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Sam_Rockwell_2018.jpg/440px-Sam_Rockwell_2018.jpg",
+    "Casey Affleck": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Casey_Affleck_2016.jpg/440px-Casey_Affleck_2016.jpg",
+    "Helena Bonham Carter": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Helena_Bonham_Carter_2011.jpg/440px-Helena_Bonham_Carter_2011.jpg",
+    "Michael Cera": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Michael_Cera_2018.jpg/440px-Michael_Cera_2018.jpg",
+    "Meryl Streep": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Meryl_Streep_2016.jpg/440px-Meryl_Streep_2016.jpg",
+    "Tom Hollander": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Tom_Hollander_2016.jpg/440px-Tom_Hollander_2016.jpg",
+    "Jon Hamm": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Jon_Hamm_2015.jpg/440px-Jon_Hamm_2015.jpg",
+    "J.K. Simmons": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/J._K._Simmons_2015.jpg/440px-J._K._Simmons_2015.jpg",
+    "Mark Ruffalo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Mark_Ruffalo_2017.jpg/440px-Mark_Ruffalo_2017.jpg",
+    "Toni Collette": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Toni_Collette_2018.jpg/440px-Toni_Collette_2018.jpg",
+    "Colin Firth": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Colin_Firth_TIFF_2018.jpg/440px-Colin_Firth_TIFF_2018.jpg",
 }
+
+
+def get_safe_filename(name):
+    """Convert name to safe filename."""
+    return "".join([c for c in name if c.isalnum() or c in (' ', '-', '_')]).strip().replace(' ', '_')
+
+
+def get_image_for_person(name, is_director=True):
+    """Get or download image for a person. Returns local path or None."""
+    if not os.path.exists('img'):
+        os.makedirs('img')
+    
+    safe_name = get_safe_filename(name)
+    local_path = f"img/{safe_name}.jpg"
+    
+    # Check if image already exists locally
+    if os.path.exists(local_path):
+        return local_path
+    
+    # Try to download from Wikipedia
+    # Try to download from Wikipedia only if NOT already present
+    # Skip download if network is unavailable
+    url_dict = WIKIPEDIA_DIRECTOR_IMAGES if is_director else WIKIPEDIA_ACTOR_IMAGES
+    if name in url_dict:
+        url = url_dict[name]
+        try:
+            response = requests.get(url, stream=True, timeout=5, headers={'User-Agent': 'Mozilla/5.0'})
+            if response.status_code == 200:
+                with open(local_path, 'wb') as out_file:
+                    shutil.copyfileobj(response.raw, out_file)
+                print(f"  Downloaded: {name}")
+                return local_path
+        except Exception:
+            pass  # Silently fail - we'll just have no image
+    
+    return None
 
 
 def read_md(filename):
@@ -115,7 +172,7 @@ def parse_directors(content, top_n=10):
                 'name': name,
                 'avg': avg,
                 'count': count,
-                'image': DIRECTOR_IMAGES.get(name)
+                'image': get_image_for_person(name, is_director=True)
             })
     return directors
 
@@ -133,7 +190,7 @@ def parse_actors(content, section_marker, top_n=5):
                 'name': name,
                 'avg': avg,
                 'count': count,
-                'image': ACTOR_IMAGES.get(name)
+                'image': get_image_for_person(name, is_director=False)
             })
     return actors
 

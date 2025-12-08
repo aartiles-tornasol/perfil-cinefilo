@@ -81,7 +81,7 @@ var PROFILE_DATA = {
         "name": "Alfred Hitchcock",
         "avg": 7.89,
         "count": 9,
-        "image": "img/Alfred_Hitchcock.jpg"
+        "image": null
       },
       {
         "name": "Quentin Tarantino",
@@ -93,37 +93,37 @@ var PROFILE_DATA = {
         "name": "Martin McDonagh",
         "avg": 7.73,
         "count": 3,
-        "image": "img/Martin_McDonagh.jpg"
+        "image": null
       },
       {
         "name": "Jean-Pierre Jeunet",
         "avg": 7.43,
         "count": 3,
-        "image": "img/Jean_Pierre_Jeunet.jpg"
+        "image": null
       },
       {
         "name": "Alex Garland",
         "avg": 7.4,
         "count": 3,
-        "image": "img/Alex_Garland.jpg"
+        "image": null
       },
       {
         "name": "Aaron Sorkin",
         "avg": 7.4,
         "count": 3,
-        "image": "img/Aaron_Sorkin.jpg"
+        "image": null
       },
       {
         "name": "Marc Forster",
         "avg": 7.3,
         "count": 4,
-        "image": "img/Marc_Forster.jpg"
+        "image": null
       },
       {
         "name": "Damien Chazelle",
         "avg": 7.3,
         "count": 4,
-        "image": "img/Damien_Chazelle.jpg"
+        "image": null
       },
       {
         "name": "Steven Spielberg",
@@ -135,7 +135,7 @@ var PROFILE_DATA = {
         "name": "Baz Luhrmann",
         "avg": 7.27,
         "count": 3,
-        "image": "img/Baz_Luhrmann.jpg"
+        "image": null
       }
     ],
     "actors": [
@@ -143,31 +143,31 @@ var PROFILE_DATA = {
         "name": "James Stewart",
         "avg": 7.6,
         "count": 5,
-        "image": null
+        "image": "img/James_Stewart.jpg"
       },
       {
         "name": "Elias Koteas",
         "avg": 7.4,
         "count": 5,
-        "image": null
+        "image": "img/Elias_Koteas.jpg"
       },
       {
         "name": "Tim Roth",
         "avg": 7.33,
         "count": 8,
-        "image": null
+        "image": "img/Tim_Roth.jpg"
       },
       {
         "name": "Harvey Keitel",
         "avg": 7.31,
         "count": 7,
-        "image": null
+        "image": "img/Harvey_Keitel.jpg"
       },
       {
         "name": "Mahershala Ali",
         "avg": 7.28,
         "count": 5,
-        "image": null
+        "image": "img/Mahershala_Ali.jpg"
       }
     ],
     "genres": [
@@ -355,37 +355,37 @@ var PROFILE_DATA = {
         "name": "Alex Garland",
         "avg": 7.4,
         "count": 3,
-        "image": "img/Alex_Garland.jpg"
+        "image": null
       },
       {
         "name": "Aaron Sorkin",
         "avg": 7.4,
         "count": 3,
-        "image": "img/Aaron_Sorkin.jpg"
+        "image": null
       },
       {
         "name": "Damien Chazelle",
         "avg": 7.3,
         "count": 4,
-        "image": "img/Damien_Chazelle.jpg"
+        "image": null
       },
       {
         "name": "Rian Johnson",
         "avg": 7.07,
         "count": 3,
-        "image": "img/Rian_Johnson.jpg"
+        "image": null
       },
       {
         "name": "Jordan Peele",
         "avg": 7.03,
         "count": 3,
-        "image": "img/Jordan_Peele.jpg"
+        "image": null
       },
       {
         "name": "David Fincher",
         "avg": 7.03,
         "count": 4,
-        "image": "img/David_Fincher.jpg"
+        "image": null
       },
       {
         "name": "Clint Eastwood",
@@ -435,13 +435,13 @@ var PROFILE_DATA = {
         "name": "Sarah Paulson",
         "avg": 7.14,
         "count": 5,
-        "image": null
+        "image": "img/Sarah_Paulson.jpg"
       },
       {
         "name": "Casey Affleck",
         "avg": 7.12,
         "count": 5,
-        "image": null
+        "image": "img/Casey_Affleck.jpg"
       }
     ],
     "genres": [

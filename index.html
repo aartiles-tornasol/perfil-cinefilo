@@ -276,22 +276,7 @@
             </div>
         </div>
 
-        <!-- NEW METRICS ROW -->
-        <div class="chart-row">
-            <div class="card">
-                <h3>⏳ Décadas Favoritas</h3>
-                <div class="chart-container" style="height: 250px;">
-                    <canvas id="decadesChart"></canvas>
-                </div>
-            </div>
-            <div class="card">
-                <h3>🗝️ Keyword DNA</h3>
-                <div id="keywords-container"
-                    style="display:flex; flex-wrap:wrap; gap:8px; align-content: flex-start; height: 250px; overflow-y:auto;">
-                    <!-- Tags injected via JS -->
-                </div>
-            </div>
-        </div>
+
 
         <!-- PEOPLE -->
         <div class="chart-row">
@@ -436,23 +421,10 @@
                     options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { min: 5, max: 9, grid: { color: '#333' } } } }
                 });
 
-                // Decades
-                const ctxDec = document.getElementById('decadesChart').getContext('2d');
-                charts.decades = new Chart(ctxDec, {
-                    type: 'radar',
-                    data: { labels: [], datasets: [{ label: 'Note', data: [], backgroundColor: 'rgba(102, 252, 241, 0.2)', borderColor: '#66fcf1' }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { r: { angleLines: { color: '#333' }, grid: { color: '#333' }, suggestedMin: 5, suggestedMax: 8 } } }
-                });
+
             }
 
-            function renderKeywords(containerId, list) {
-                const el = document.getElementById(containerId);
-                if (!list || list.length === 0) { el.innerHTML = ''; return; }
-                el.innerHTML = list.map(k => {
-                    const size = 0.8 + (k.weight * 0.1);
-                    return `<span style="background:var(--card-bg); border:1px solid var(--accent-dark); color:var(--text-main); padding:4px 8px; border-radius:12px; font-size:${Math.min(size, 1.5)}rem">${k.text}</span>`;
-                }).join('');
-            }
+
 
             function updateView(mode) {
                 const data = d[mode];
@@ -468,12 +440,7 @@
                 charts.genres.data.datasets[0].data = data.genres.map(g => g.avg);
                 charts.genres.update();
 
-                if (d.decades) {
-                    charts.decades.data.labels = d.decades.map(x => x.name);
-                    charts.decades.data.datasets[0].data = d.decades.map(x => x.avg);
-                    charts.decades.update();
-                }
-                if (d.keywords) renderKeywords('keywords-container', d.keywords);
+
             }
 
             function switchTab(mode) {
